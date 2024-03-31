@@ -16,6 +16,7 @@
   padding: 20px;
 }
 
+
 textarea {
   width: 100%;
   height: calc(100% - 40px);
@@ -89,4 +90,13 @@ button {
   border: 2px solid #ccc;
   border-radius: 5px;
   padding: 10px;
+}
+
+.output-container-button{
+  display: flex;
+  /* justify-content: space-evenly; */
+}
+
+.clear{
+  margin-right: 1rem;
 }

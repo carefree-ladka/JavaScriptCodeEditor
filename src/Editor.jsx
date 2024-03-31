@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import './App.css';
 
+
 function App() {
   const [code, setCode] = useState('');
   const [outputs, setOutputs] = useState([]);
@@ -29,10 +30,8 @@ function App() {
   const runCode = () => {
     try {
       const worker = new Worker('worker.js');
-
       // Listen for messages from the worker
       worker.onmessage = (event) => {
-        console.log('event', event.data); //['[object Object]', 'iuou']
         // Append the output from the worker to the outputs array
         setOutputs(prevOutputs => [...prevOutputs, event.data]);
       };
@@ -74,7 +73,9 @@ function App() {
   return (
     <div className="container">
       <div className="editor-container">
+        {/* <div className='editor-container-button'> */}
         <button onClick={toggleTheme}>Toggle Theme</button>
+        {/* </div> */}
         <div className='editor-border'>
           <Editor
             width="100%"
@@ -85,11 +86,15 @@ function App() {
             onChange={(newValue) => setCode(newValue)}
           />
         </div>
-        <button onClick={runCode}>Run</button>
       </div>
       <div className="output-container">
-        <div>
-          <button onClick={clearOutput}>Clear Output</button>
+        <div className='output-container-button'>
+          <div className='clear'>
+            <button onClick={clearOutput}>Clear Output</button>
+          </div>
+          <div>
+            <button onClick={runCode}>Run</button>
+          </div>
         </div>
         <div className="output">
           {
