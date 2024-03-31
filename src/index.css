@@ -1,0 +1,10 @@
+
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+body.dark-mode {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
