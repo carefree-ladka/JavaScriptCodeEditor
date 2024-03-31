@@ -89,11 +89,11 @@ function App() {
       </div>
       <div className="output-container">
         <div className='output-container-button'>
-          <div className='clear'>
-            <button onClick={clearOutput}>Clear Output</button>
-          </div>
           <div>
             <button onClick={runCode}>Run</button>
+          </div>
+          <div className='clear'>
+            <button onClick={clearOutput}>Clear Output</button>
           </div>
         </div>
         <div className="output">
