@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
+import { toPng } from 'html-to-image';
 import options from './editorOptions'
 import './App.css';
 
 
 function App() {
+  const editorRef = React.useRef(null);
+  const containerRef = React.useRef(null);
   const [code, setCode] = useState('');
   const [outputs, setOutputs] = useState([]);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'vs');
@@ -87,19 +90,59 @@ function App() {
     }
   };
 
+
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+  };
+
+  const formatCode = () => {
+    const unformattedCode = editorRef.current.getValue();
+    const formattedCode = prettier.format(unformattedCode, {
+      parser: 'babel',
+      plugins: [parserBabel],
+      semi: true,
+      singleQuote: true,
+    });
+    editorRef.current.setValue(formattedCode);
+  };
+
+  const downloadImage = async () => {
+    if (containerRef.current) {
+      try {
+        const dataUrl = await toPng(containerRef.current);
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = 'snippet.png';
+        document.querySelector('.editor').style.border= "none";
+        link.click();
+      } catch (error) {
+        console.error('oops, something went wrong!', error);
+      }
+    }
+  };
+
+  console.log(code);
   return (
     <div className="container" >
       <div className="editor-container" >
-        <button onClick={toggleTheme}>{theme !== 'vs-dark' ? "Dark" : "Light"} Theme</button>
-        <div className='editor-border' >
+        {/* <button onClick={formatCode}>Format Code</button> */}
+        <div className='editor-container-button'>
+          <button onClick={downloadImage} disabled={!code} style={{
+            background: !code ? "#ddd" : '#007bff'
+          }}>Snippet</button>
+          <button onClick={toggleTheme}>{theme !== 'vs-dark' ? "Dark" : "Light"} Theme</button>
+        </div>
+        <div className='editor-border' ref={containerRef}>
           <Editor
-            width="100%"
+            className='editor'
+            width="100vh"
             height="70vh"
-            defaultValue='haha'
+            // defaultValue={`//console.log('Hello Coder...')`}
             theme={theme}
             options={options}
             language="javascript"
             value={code}
+            onMount={handleEditorDidMount}
             onChange={(newValue) => setCode(newValue)}
           />
         </div>

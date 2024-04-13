@@ -1,7 +1,7 @@
 //https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IEditorConstructionOptions.html#stickyScroll
 
 export default {
-  fontSize: 20,
+  fontSize: 18,
   formatOnType: true,
   formatOnType: true, // Enable auto-formatting on type
   formatOnPaste: true, // Enable auto-formatting on paste

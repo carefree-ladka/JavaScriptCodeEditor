@@ -46,6 +46,7 @@ button {
 
 .editor-container {
   padding: 20px;
+  
 }
 
 .output-container {
@@ -93,4 +94,10 @@ button {
 .clear{
   margin-left: 1rem;
   margin-right: 1rem;
+}
+
+.editor-container-button{
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem
 }

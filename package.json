@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "predeploy":"npm run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "html-to-image": "^1.11.11",
     "marked": "^12.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
