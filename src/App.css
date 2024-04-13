@@ -17,13 +17,6 @@
 }
 
 
-textarea {
-  width: 100%;
-  height: calc(100% - 40px);
-  padding: 10px;
-  resize: none;
-}
-
 button {
   display: block;
   margin-top: 10px;
@@ -87,7 +80,7 @@ button {
 }
 
 .editor-border {
-  border: 2px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
 }
@@ -99,4 +92,5 @@ button {
 
 .clear{
   margin-left: 1rem;
+  margin-right: 1rem;
 }

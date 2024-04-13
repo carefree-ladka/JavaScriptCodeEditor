@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
+import options from './editorOptions'
 import './App.css';
 
 
@@ -7,6 +8,7 @@ function App() {
   const [code, setCode] = useState('');
   const [outputs, setOutputs] = useState([]);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'vs');
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Load code from local storage when the component mounts
   React.useEffect(() => {
@@ -53,6 +55,21 @@ function App() {
     setOutputs([]);
   };
 
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().then(() => {
+        setIsFullscreen(true);
+      }).catch((err) => {
+        console.error('Error attempting to enable full-screen mode:', err);
+      });
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      }).catch((err) => {
+        console.error('Error attempting to exit full-screen mode:', err);
+      });
+    }
+  };
 
   const renderOutput = (output, index) => {
     // Check if the output is a string
@@ -71,16 +88,16 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <div className="editor-container">
-        {/* <div className='editor-container-button'> */}
-        <button onClick={toggleTheme}>Toggle Theme</button>
-        {/* </div> */}
-        <div className='editor-border'>
+    <div className="container" >
+      <div className="editor-container" >
+        <button onClick={toggleTheme}>{theme !== 'vs-dark' ? "Dark" : "Light"} Theme</button>
+        <div className='editor-border' >
           <Editor
             width="100%"
-            height="50vh"
+            height="70vh"
+            defaultValue='haha'
             theme={theme}
+            options={options}
             language="javascript"
             value={code}
             onChange={(newValue) => setCode(newValue)}
@@ -94,6 +111,11 @@ function App() {
           </div>
           <div className='clear'>
             <button onClick={clearOutput}>Clear Output</button>
+          </div>
+          <div>
+            <button onClick={toggleFullscreen}>
+              {isFullscreen ? 'Exit Fullscreen' : 'Expand'}
+            </button>
           </div>
         </div>
         <div className="output">

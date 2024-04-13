@@ -1,15 +1,17 @@
 self.onmessage = (event) => {
   const code = event.data;
   try {
-    // Override console.log to send messages back to the main thread
+    // Override console.log to send all messages back to the main thread in one line
     console.log = (...args) => {
-      for (const arg of args) {
+      let message = args.map(arg => {
         if (typeof arg === 'object' && arg !== null) {
-          self.postMessage(JSON.stringify(arg));
+          return JSON.stringify(arg);
         } else {
-          self.postMessage(arg);
+          return arg.toString();
         }
-      }
+      }).join(" "); // Concatenate all arguments into a single string with spaces
+
+      self.postMessage(message);
     };
 
     // Execute the code
