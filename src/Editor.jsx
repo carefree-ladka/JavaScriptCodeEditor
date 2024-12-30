@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import { toPng } from 'html-to-image';
-import options from './editorOptions'
+import options from './editorOptions';
 import './App.css';
-
 
 function App() {
   const editorRef = React.useRef(null);
@@ -13,7 +11,6 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'vs');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Load code from local storage when the component mounts
   React.useEffect(() => {
     const storedCode = localStorage.getItem('code');
     if (storedCode) {
@@ -21,7 +18,6 @@ function App() {
     }
   }, []);
 
-  // Save code to local storage whenever it changes
   React.useEffect(() => {
     localStorage.setItem('code', code);
   }, [code]);
@@ -31,22 +27,16 @@ function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-
   const runCode = () => {
     try {
       const worker = new Worker('worker.js');
-      // Listen for messages from the worker
       worker.onmessage = (event) => {
-        // Append the output from the worker to the outputs array
-        setOutputs(prevOutputs => [...prevOutputs, event.data]);
+        setOutputs((prevOutputs) => [...prevOutputs, event.data]);
       };
-
-      // Send the code to the worker
       worker.postMessage(code);
     } catch (error) {
-      // Handle any errors
       console.error('Error:', error);
-      setOutputs(prevOutputs => [...prevOutputs, error.toString()]);
+      setOutputs((prevOutputs) => [...prevOutputs, error.toString()]);
     }
   };
 
@@ -75,69 +65,32 @@ function App() {
   };
 
   const renderOutput = (output, index) => {
-    // Check if the output is a string
     if (typeof output === 'string') {
       return <div key={index}>{output}</div>;
-    }
-    // Check if the output is a JavaScript object
-    else if (typeof output === 'object' && output !== null) {
-      // Stringify the object to display it properly
-      return <div>{JSON.stringify(output, 4, null)}</div>
-    }
-    // If the output is neither a string nor an object, render it as is
-    else {
+    } else if (typeof output === 'object' && output !== null) {
+      return <div>{JSON.stringify(output, 4, null)}</div>;
+    } else {
       return <div key={index}>{output}</div>;
     }
   };
-
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
   };
 
-  const formatCode = () => {
-    const unformattedCode = editorRef.current.getValue();
-    const formattedCode = prettier.format(unformattedCode, {
-      parser: 'babel',
-      plugins: [parserBabel],
-      semi: true,
-      singleQuote: true,
-    });
-    editorRef.current.setValue(formattedCode);
-  };
-
-  const downloadImage = async () => {
-    if (containerRef.current) {
-      try {
-        const dataUrl = await toPng(containerRef.current);
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = 'snippet.png';
-        document.querySelector('.editor').style.border= "none";
-        link.click();
-      } catch (error) {
-        console.error('oops, something went wrong!', error);
-      }
-    }
-  };
-
-  console.log(code);
   return (
-    <div className="container" >
-      <div className="editor-container" >
-        {/* <button onClick={formatCode}>Format Code</button> */}
-        <div className='editor-container-button'>
-          <button onClick={downloadImage} disabled={!code} style={{
-            background: !code ? "#ddd" : '#007bff'
-          }}>Snippet</button>
-          <button onClick={toggleTheme}>{theme !== 'vs-dark' ? "Dark" : "Light"} Theme</button>
+    <div className="container">
+      <div className={`editor-container ${isFullscreen ? 'fullscreen' : ''}`}>
+        <div className="editor-container-header">
+          <button className="theme-toggle-btn" onClick={toggleTheme}>
+            {theme !== 'vs-dark' ? '🌙 Dark Mode' : '🌞 Light Mode'}
+          </button>
         </div>
-        <div className='editor-border' ref={containerRef}>
+        <div className="editor-border" ref={containerRef}>
           <Editor
-            className='editor'
-            width="100vh"
-            height="70vh"
-            // defaultValue={`//console.log('Hello Coder...')`}
+            className="editor"
+            width="100%"
+            height="100vh"
             theme={theme}
             options={options}
             language="javascript"
@@ -147,24 +100,17 @@ function App() {
           />
         </div>
       </div>
+
       <div className="output-container">
-        <div className='output-container-button'>
-          <div>
-            <button onClick={runCode}>Run</button>
-          </div>
-          <div className='clear'>
-            <button onClick={clearOutput}>Clear Output</button>
-          </div>
-          <div>
-            <button onClick={toggleFullscreen}>
-              {isFullscreen ? 'Exit Fullscreen' : 'Expand'}
-            </button>
-          </div>
+        <div className="output-container-button">
+          <button onClick={runCode}>Run</button>
+          <button onClick={clearOutput}>Clear Output</button>
+          <button onClick={toggleFullscreen}>
+            {isFullscreen ? 'Exit Fullscreen' : 'Expand'}
+          </button>
         </div>
         <div className="output">
-          {
-            outputs.map((output, index) => renderOutput(output, index))
-          }
+          {outputs.map((output, index) => renderOutput(output, index))}
         </div>
       </div>
     </div>
