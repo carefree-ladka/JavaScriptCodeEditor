@@ -8,7 +8,7 @@ export default {
   formatOnPaste: true, // Enable auto-formatting on paste
   formatOnSave: true, // Enable auto-formatting on save
   automaticLayout: true, // Automatically adjust the editor's layout
-  showFoldingControls: 'hover', // Always show folding controls
+  showFoldingControls: 'mouseover', // Always show folding controls
   showUnused: true, // Show unused variables (helps with code analysis)
   smoothScrolling: true, // Enable smooth scrolling
   wordWrap: 'off', // Disable word wrapping (lines stay on the same horizontal plane)
