@@ -1,7 +1,8 @@
 //https://microsoft.github.io/monaco-editor/typedoc/interfaces/editor.IEditorConstructionOptions.html#stickyScroll
 
 export default {
-  fontSize: 20, // Set the font size of the editor
+  fontSize: 26, // Set the font size of the editor
+  semicolon: true,
   fontFamily: 'Monaco, MonoLisa, monospace', // Set the font family (you can use any monospace font)
   formatOnType: true, // Enable auto-formatting on type
   formatOnPaste: true, // Enable auto-formatting on paste
@@ -10,7 +11,7 @@ export default {
   showFoldingControls: 'always', // Always show folding controls
   showUnused: true, // Show unused variables (helps with code analysis)
   smoothScrolling: true, // Enable smooth scrolling
-  wordWrap: 'on', // Enable word wrapping
+  wordWrap: 'off', // Disable word wrapping (lines stay on the same horizontal plane)
   stickyScroll: true, // Sticky scroll to keep the current line visible while scrolling
   minimap: { enabled: true, side: 'right' }, // Enable minimap, positioned to the right
   lineNumbers: 'on', // Show line numbers
@@ -46,4 +47,6 @@ export default {
   folding: true, // Enable code folding
   lineDecorationsWidth: 10, // Adjust the width for decorations (such as breakpoint indicators)
   rulers: [120], // Add visual guide for 120 characters
-}
+  glyphMargin: false, // Disable glyph margin (white dots on the left side)
+  scrollBeyondLastColumn: 5, // Add a slight margin for horizontal scrolling
+};
