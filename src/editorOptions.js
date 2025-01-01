@@ -15,7 +15,7 @@ export default {
   stickyScroll: true, // Sticky scroll to keep the current line visible while scrolling
   minimap: { enabled: true, side: 'right' }, // Enable minimap, positioned to the right
   lineNumbers: 'on', // Show line numbers
-  renderWhitespace: 'boundary', // Render whitespace characters as visible markers
+  // renderWhitespace: 'boundary', // Render whitespace characters as visible markers
   renderControlCharacters: true, // Show control characters in the editor
   cursorStyle: 'line', // Set cursor style to 'line' (other options: 'block', 'underline')
   cursorBlinking: 'blink', // Enable cursor blinking (other options: 'smooth', 'phase', 'expand')
