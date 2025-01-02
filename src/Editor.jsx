@@ -14,26 +14,26 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'vs');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [language, setLanguage] = useState('javascript');
-  const [availableThemes, setAvailableThemes] = useState([]);
+  // const [availableThemes, setAvailableThemes] = useState([]);
 
-  React.useEffect(() => {
-    const loadThemes = async () => {
-      const themeArray = Object.entries(themes).map(([id, name]) => ({ id, name }));
-      setAvailableThemes(themeArray);
+  // React.useEffect(() => {
+  //   const loadThemes = async () => {
+  //     const themeArray = Object.entries(themes).map(([id, name]) => ({ id, name }));
+  //     setAvailableThemes(themeArray);
 
-      // Load all themes
-      for (const [id, name] of Object.entries(themes)) {
-        try {
-          const themeData = await fetch(`https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/${id}.json`).then(r => r.json());
-          monaco.editor.defineTheme(id, themeData);
-        } catch (error) {
-          console.error(`Failed to load theme: ${name}`, error);
-        }
-      }
-    };
+  //     // Load all themes
+  //     for (const [id, name] of Object.entries(themes)) {
+  //       try {
+  //         const themeData = await fetch(`https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/${id}.json`).then(r => r.json());
+  //         monaco.editor.defineTheme(id, themeData);
+  //       } catch (error) {
+  //         console.error(`Failed to load theme: ${name}`, error);
+  //       }
+  //     }
+  //   };
 
-    loadThemes();
-  }, []);
+  //   loadThemes();
+  // }, []);
 
   React.useEffect(() => {
     const storedCode = localStorage.getItem('code');
@@ -83,11 +83,11 @@ function App() {
     });
   };
 
-  const handleThemeChange = (e) => {
-    const newTheme = e.target.value;
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-  };
+  // const handleThemeChange = (e) => {
+  //   const newTheme = e.target.value;
+  //   setTheme(newTheme);
+  //   localStorage.setItem('theme', newTheme);
+  // };
 
   const clearOutput = () => {
     setOutputs([]);
@@ -109,46 +109,46 @@ function App() {
     }
   };
 
-  const setupAutocompletion = (editor, monaco) => {
-    monaco.languages.registerCompletionItemProvider('javascript', {
-      provideCompletionItems: (model, position) => {
-        const word = model.getWordUntilPosition(position);
-        const range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn
-        };
+  // const setupAutocompletion = (editor, monaco) => {
+  //   monaco.languages.registerCompletionItemProvider('javascript', {
+  //     provideCompletionItems: (model, position) => {
+  //       const word = model.getWordUntilPosition(position);
+  //       const range = {
+  //         startLineNumber: position.lineNumber,
+  //         endLineNumber: position.lineNumber,
+  //         startColumn: word.startColumn,
+  //         endColumn: word.endColumn
+  //       };
 
-        const suggestions = [
-          {
-            label: 'console.log',
-            kind: monaco.languages.CompletionItemKind.Function,
-            insertText: 'console.log($1)',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range,
-            detail: 'Log to console',
-            documentation: 'Outputs a message to the console'
-          },
-          {
-            label: 'console.error',
-            kind: monaco.languages.CompletionItemKind.Function,
-            insertText: 'console.error($1)',
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range,
-            detail: 'Error to console',
-            documentation: 'Outputs an error message to the console'
-          }
-        ];
+  //       const suggestions = [
+  //         {
+  //           label: 'console.log',
+  //           kind: monaco.languages.CompletionItemKind.Function,
+  //           insertText: 'console.log($1)',
+  //           insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+  //           range,
+  //           detail: 'Log to console',
+  //           documentation: 'Outputs a message to the console'
+  //         },
+  //         {
+  //           label: 'console.error',
+  //           kind: monaco.languages.CompletionItemKind.Function,
+  //           insertText: 'console.error($1)',
+  //           insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+  //           range,
+  //           detail: 'Error to console',
+  //           documentation: 'Outputs an error message to the console'
+  //         }
+  //       ];
 
-        return { suggestions };
-      }
-    });
-  };
+  //       return { suggestions };
+  //     }
+  //   });
+  // };
 
   const handleEditorDidMount = (editor, monaco) => {
     editorRef.current = editor;
-    setupAutocompletion(editor, monaco);
+    // setupAutocompletion(editor, monaco);
   };
 
   const formatOutput = (output, index) => {
@@ -214,14 +214,14 @@ function App() {
             value={code}
             onMount={handleEditorDidMount}
             onChange={(newValue) => setCode(newValue)}
-            beforeMount={(monaco) => {
-              monaco.editor.defineTheme('custom-theme', {
-                base: 'vs-dark',
-                inherit: true,
-                rules: [],
-                colors: {}
-              });
-            }}
+            // beforeMount={(monaco) => {
+            //   monaco.editor.defineTheme('custom-theme', {
+            //     base: 'vs-dark',
+            //     inherit: true,
+            //     rules: [],
+            //     colors: {}
+            //   });
+            // }}
           />
         </div>
       </div>
