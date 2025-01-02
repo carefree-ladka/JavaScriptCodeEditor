@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Eraser, Expand, Maximize, Moon, Play, Sun } from 'lucide-react';
 import Editor from '@monaco-editor/react';
-import themes from 'monaco-themes/themes/themelist.json';
+// import themes from 'monaco-themes/themes/themelist.json';
 import options from './editorOptions';
 import './App.css';
 
