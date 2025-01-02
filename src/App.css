@@ -151,3 +151,88 @@ body.dark-mode .output-container-button button:hover {
 body.dark-mode .theme-toggle-btn {
   background: linear-gradient(45deg, #6200ea, #3700b3);
 }
+
+/* Add these styles to your CSS file */
+.console-output {
+  font-family: 'Consolas', 'Monaco', monospace;
+  padding: 8px;
+  line-height: 1.5;
+}
+
+.console-log,
+.console-error {
+  padding: 4px 0;
+  display: flex;
+  gap: 8px;
+}
+
+.console-timestamp {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.console-error .console-content {
+  color: #ff5555;
+}
+
+.console-item {
+  white-space: pre-wrap;
+}
+
+.type-string {
+  color: #a8bf7b;
+}
+
+.type-number {
+  color: #7cacf4;
+}
+
+.type-boolean {
+  color: #c586c0;
+}
+
+.type-object {
+  color: #dbdbdb;
+}
+
+/* Dark theme adjustments */
+.dark-mode .console-output {
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+/* Add these styles to your CSS */
+.editor-container-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px;
+  gap: 12px;
+}
+
+.theme-select {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dark-mode .theme-select {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-color: #404040;
+}
+
+.theme-select:hover {
+  border-color: #666;
+}
+
+.theme-select:focus {
+  outline: none;
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
