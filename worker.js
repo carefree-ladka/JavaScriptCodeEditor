@@ -1,23 +1,48 @@
+// worker.js
 self.onmessage = (event) => {
   const code = event.data;
   try {
-    // Override console.log to send all messages back to the main thread in one line
+    // Create a more sophisticated console.log override
     console.log = (...args) => {
-      let message = args.map(arg => {
-        if (typeof arg === 'object' && arg !== null) {
-          return JSON.stringify(arg);
-        } else {
-          return arg.toString();
+      const formattedArgs = args.map(arg => {
+        if (arg === undefined) return 'undefined';
+        if (arg === null) return 'null';
+        if (typeof arg === 'object') {
+          try {
+            // Handle circular references and prettier formatting
+            return JSON.stringify(arg, null, 2);
+          } catch {
+            return arg.toString();
+          }
         }
-      }).join(" "); // Concatenate all arguments into a single string with spaces
+        if (typeof arg === 'string') return `"${arg}"`;
+        return String(arg);
+      });
 
-      self.postMessage(message);
+      self.postMessage({
+        type: 'log',
+        content: formattedArgs,
+        timestamp: new Date().toLocaleTimeString()
+      });
+    };
+
+    // Add support for console.error
+    console.error = (...args) => {
+      const formattedArgs = args.map(arg => String(arg));
+      self.postMessage({
+        type: 'error',
+        content: formattedArgs,
+        timestamp: new Date().toLocaleTimeString()
+      });
     };
 
     // Execute the code
     (new Function(code))();
   } catch (error) {
-    // If an error occurs, send the error message back to the main thread
-    self.postMessage(error.toString());
+    self.postMessage({
+      type: 'error',
+      content: [error.toString()],
+      timestamp: new Date().toLocaleTimeString()
+    });
   }
 };
