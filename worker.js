@@ -2,22 +2,25 @@
 self.onmessage = (event) => {
   const code = event.data;
   try {
-    // Create a more sophisticated console.log override
     console.log = (...args) => {
-      const formattedArgs = args.map(arg => {
-        if (arg === undefined) return 'undefined';
-        if (arg === null) return 'null';
-        if (typeof arg === 'object') {
+      const formatValue = (value) => {
+        if (value === undefined) return 'undefined';
+        if (value === null) return 'null';
+        if (Array.isArray(value)) {
+          return `[${value.map(item => formatValue(item)).join(', ')}]`;
+        }
+        if (typeof value === 'object') {
           try {
-            // Handle circular references and prettier formatting
-            return JSON.stringify(arg, null, 2);
+            return JSON.stringify(value, null, 2);
           } catch {
-            return arg.toString();
+            return value.toString();
           }
         }
-        if (typeof arg === 'string') return `"${arg}"`;
-        return String(arg);
-      });
+        if (typeof value === 'string') return `"${value}"`;
+        return String(value);
+      };
+
+      const formattedArgs = args.map(formatValue);
 
       self.postMessage({
         type: 'log',
@@ -26,7 +29,6 @@ self.onmessage = (event) => {
       });
     };
 
-    // Add support for console.error
     console.error = (...args) => {
       const formattedArgs = args.map(arg => String(arg));
       self.postMessage({
@@ -36,7 +38,6 @@ self.onmessage = (event) => {
       });
     };
 
-    // Execute the code
     (new Function(code))();
   } catch (error) {
     self.postMessage({
