@@ -1,27 +1,5 @@
+@import "tailwindcss";
 
-body{
-  font-family: Arial, Helvetica, sans-serif;
-  overflow: hidden;
-}
-
-body.dark-mode {
-  background-color: #1e1e1e;
-  color: #ffffff;
-}
-
-::-webkit-scrollbar {
-    width: 6px; /* for vertical scrollbars */
-    height: 6px; /* for horizontal scrollbars */
-}
-
-/* This styles the draggable part of the scrollbar */
-::-webkit-scrollbar-thumb {
-    background-color: darkgrey; /* or any color you prefer */
-    border-radius: 10px;
-}
-
-/* Optional: style the scrollbar track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1; /* or any color you prefer */
-    border-radius: 10px;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
