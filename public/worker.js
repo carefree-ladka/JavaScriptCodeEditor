@@ -382,24 +382,167 @@ self.onmessage = (event) => {
       };
     }
 
-    // Execute the code
-    new Function(code)();
+    // Execute the code with better error handling
+    // eslint-disable-next-line no-useless-catch
+    try {
+      new Function(code)();
+    } catch (innerError) {
+      // Re-throw with the original error to get better stack trace
+      throw innerError;
+    }
   } catch (error) {
-    // Enhanced error handling
+    // Enhanced error line extraction for user code
+    const extractLineInfo = (error, code) => {
+      let lineNumber = null;
+      let columnNumber = null;
+      let errorLine = "";
+      let contextLines = [];
+
+      // First, try to parse syntax errors by attempting to compile the code line by line
+      if (error instanceof SyntaxError && code) {
+        const lines = code.split("\n");
+
+        // Try to find the syntax error by testing each line cumulatively
+        for (let i = 0; i < lines.length; i++) {
+          try {
+            const testCode = lines.slice(0, i + 1).join("\n");
+            new Function(testCode);
+          } catch (testError) {
+            if (testError instanceof SyntaxError) {
+              // Found the problematic line
+              lineNumber = i + 1;
+              errorLine = lines[i];
+
+              // Try to extract column from the error message
+              const columnMatch = error.message.match(
+                /position (\d+)|column (\d+)|char (\d+)/i
+              );
+              if (columnMatch) {
+                columnNumber = parseInt(
+                  columnMatch[1] || columnMatch[2] || columnMatch[3],
+                  10
+                );
+              }
+
+              // If we can't find column from message, try to parse it from the line
+              if (
+                !columnNumber &&
+                error.message.includes("Unexpected identifier")
+              ) {
+                // For "Unexpected identifier" errors, try to find the position
+                const match = error.message.match(/'([^']+)'/);
+                if (match && errorLine) {
+                  const unexpectedToken = match[1];
+                  const tokenIndex = errorLine.indexOf(unexpectedToken);
+                  if (tokenIndex !== -1) {
+                    columnNumber = tokenIndex + 1;
+                  }
+                }
+              }
+
+              break;
+            }
+          }
+        }
+
+        // If we still couldn't find it, default to line 1
+        if (!lineNumber) {
+          lineNumber = 1;
+          errorLine = lines[0] || "";
+        }
+      } else {
+        // For runtime errors, try to extract from stack trace
+        const stack = error.stack || "";
+        const patterns = [
+          /<anonymous>:(\d+):(\d+)/,
+          /Function:(\d+):(\d+)/,
+          /eval:(\d+):(\d+)/,
+          /at .*?:(\d+):(\d+)/,
+        ];
+
+        for (const pattern of patterns) {
+          const match = stack.match(pattern);
+          if (match) {
+            // For Function constructor, the line numbers are relative to the function body
+            lineNumber = parseInt(match[1], 10);
+            columnNumber = match[2] ? parseInt(match[2], 10) : null;
+            break;
+          }
+        }
+
+        // Extract the error line if we found a line number
+        if (lineNumber && code) {
+          const lines = code.split("\n");
+          const lineIndex = lineNumber - 1;
+          if (lineIndex >= 0 && lineIndex < lines.length) {
+            errorLine = lines[lineIndex];
+          }
+        }
+      }
+
+      // Generate context lines if we have a line number
+      if (lineNumber && code) {
+        const lines = code.split("\n");
+        const lineIndex = lineNumber - 1;
+        const contextStart = Math.max(0, lineIndex - 2);
+        const contextEnd = Math.min(lines.length - 1, lineIndex + 2);
+
+        for (let i = contextStart; i <= contextEnd; i++) {
+          contextLines.push({
+            lineNumber: i + 1,
+            content: lines[i] || "",
+            isErrorLine: i === lineIndex,
+            columnNumber: i === lineIndex ? columnNumber : null,
+          });
+        }
+      }
+
+      return {
+        lineNumber,
+        columnNumber,
+        errorLine,
+        contextLines,
+        hasLocation: lineNumber !== null,
+      };
+    };
+
+    const lineInfo = extractLineInfo(error, code);
+
+    // Create a more detailed error message
+    let errorMessage = `${error.name}: ${error.message}`;
+    if (lineInfo.hasLocation) {
+      errorMessage += ` (Line ${lineInfo.lineNumber}`;
+      if (lineInfo.columnNumber) {
+        errorMessage += `, Column ${lineInfo.columnNumber}`;
+      }
+      errorMessage += ")";
+    }
+
     self.postMessage({
       type: "error",
       content: [
         {
           type: "error",
-          value: `${error.name}: ${error.message}`,
+          value: errorMessage,
           stack: error.stack,
-          line: error.lineNumber || "unknown",
-          column: error.columnNumber || "unknown",
+          lineNumber: lineInfo.lineNumber,
+          columnNumber: lineInfo.columnNumber,
+          errorLine: lineInfo.errorLine,
+          contextLines: lineInfo.contextLines,
+          hasLocation: lineInfo.hasLocation,
           raw: error,
         },
       ],
       timestamp: new Date().toLocaleTimeString(),
       isRuntimeError: true,
+      location: lineInfo.hasLocation
+        ? {
+            line: lineInfo.lineNumber,
+            column: lineInfo.columnNumber,
+            errorLine: lineInfo.errorLine,
+            contextLines: lineInfo.contextLines,
+          }
+        : null,
     });
   }
 };
