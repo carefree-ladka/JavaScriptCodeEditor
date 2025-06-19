@@ -14,7 +14,6 @@ import Editor from "@monaco-editor/react";
 
 const editorOptions = {
   glyphMargin: false,
-  lineDecorationsWidth: 0,
   lineNumbersMinChars: 0,
   fontSize: 22,
   fontFamily:
@@ -65,7 +64,6 @@ const editorOptions = {
   foldingStrategy: "indentation",
   lineDecorationsWidth: 10,
   rulers: [80, 120],
-  glyphMargin: true,
   scrollBeyondLastColumn: 5,
   scrollBeyondLastLine: true,
   bracketPairColorization: { enabled: true },
